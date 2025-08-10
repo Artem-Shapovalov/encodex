@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-static void random_check()
+static void random_check(void)
 {
 	size_t i;
 	uint32_t values[10];
@@ -98,7 +98,7 @@ static int compare(const uint8_t* mem, const uint8_t* exp)
 	return res;
 }
 
-static void rol_check()
+static void rol_check(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];
@@ -121,7 +121,7 @@ static void rol_check()
 	printf("	%s\n", compare(mem, exp) == 0 ? "OK" : "fail");
 }
 
-static void add_check_key()
+static void add_check_key(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];
@@ -144,7 +144,7 @@ static void add_check_key()
 	printf("	%s\n", compare(mem, exp) == 0 ? "OK" : "fail");
 }
 
-static void noize_denoize_check()
+static void noize_denoize_check(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];
@@ -167,7 +167,7 @@ static void noize_denoize_check()
 	printf("	%s\n", compare(mem, exp) == 0 ? "OK" : "fail");
 }
 
-static void shuffle_check()
+static void shuffle_check(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];
@@ -190,7 +190,7 @@ static void shuffle_check()
 	printf("	%s\n", compare(mem, exp) == 0 ? "OK" : "fail");
 }
 
-static void encodex_check()
+static void encodex_check(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];
@@ -213,7 +213,7 @@ static void encodex_check()
 	printf("	%s\n", compare(mem, exp) == 0 ? "OK" : "fail");
 }
 
-static void encodex_cbc_check()
+static void encodex_cbc_check(void)
 {
 	size_t idx;
 	uint8_t key[ENCODEX_KEY_SIZE_BYTES];

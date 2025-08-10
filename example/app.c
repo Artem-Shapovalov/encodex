@@ -186,7 +186,7 @@ static struct cli_result cli(int argc, char** argv)
 	return res;
 }
 
-static void print_help()
+static void print_help(void)
 {
 	(void)printf("ENCODEX demo application\n");
 	(void)printf("Usage: encodex <command> [cbc] <ifile> <ofile> <key>\n");
