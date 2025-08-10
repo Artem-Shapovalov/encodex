@@ -1,0 +1,17 @@
+name: ARM Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install software
+        run: |
+          sudo apt-get update
+          sudo apt-get install arm-none-eabi-gcc arm-none-eabi-newlib
+
+      - name: Build
+        run: |
+          make check CC=arm-none-eabi-gcc
