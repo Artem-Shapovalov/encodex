@@ -1,0 +1,17 @@
+name: MISRA C 2012 Compliance
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install software
+        run: |
+          sudo apt-get update
+          sudo apt-get install cppcheck
+
+      - name: Build
+        run: |
+          make check_misra
