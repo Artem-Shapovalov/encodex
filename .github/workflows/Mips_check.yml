@@ -1,0 +1,17 @@
+name: MIPS Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install software
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-mips-linux-gnu
+
+      - name: Build
+        run: |
+          make check CC=mips-linux-gnu-gcc
