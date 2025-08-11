@@ -10,7 +10,7 @@ jobs:
       - name: Install software
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-avr
+          sudo apt-get install gcc-avr avr-libc
       - name: Build
         run: |
           make check CC=avr-gcc
