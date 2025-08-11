@@ -18,4 +18,4 @@
 | clang             | 1595 |    0 |    0 |
 | arm-none-eabi-gcc | 1116 |    4 |    0 |
 | avr-gcc           | 1928 |    4 |    0 |
-| riscv64-elf-gcc   | 1098 |    4 |    0 |
+| riscv64-linux-gnu | 2044 |    4 |    0 |
