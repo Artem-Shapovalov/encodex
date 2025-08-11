@@ -272,9 +272,8 @@ static void shuffle(uint8_t* block, const uint8_t* key)
 	}
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void encodex(uint8_t* block, const uint8_t* key)
 {
 	rol_block(block, key);
@@ -379,9 +378,8 @@ static void revert_shuffle(uint8_t* block, const uint8_t* key)
 	}
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void decodex(uint8_t* block, const uint8_t* key)
 {
 	revert_shuffle  (block, key);
@@ -412,35 +410,29 @@ static uint32_t cbc(uint8_t* key, uint32_t seed)
 	return prnd_prev(prnd());
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
 void encodex_cbc_stream_init(const uint8_t* key, uint32_t* seed)
 {
 	*seed = convolute(key);
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void encodex_cbc_stream(uint8_t* block, uint8_t* key, uint32_t* seed)
 {
 	*seed = cbc(key, *seed);
 	encodex(block, key);
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void decodex_cbc_stream(uint8_t* block, uint8_t* key, uint32_t* seed)
 {
 	*seed = cbc(key, *seed);
 	decodex(block, key);
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void encodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 {
 	register size_t idx;
@@ -461,9 +453,8 @@ void encodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 	}
 }
 
-#ifdef ENCODEX_CHECK
-__attribute__((used))
-#endif /* ENCODEX_CHECK */
+/* cppcheck-suppress unusedFunction */
+/* cppcheck-suppress misra-c2012-8.7 */
 void decodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 {
 	register size_t idx;

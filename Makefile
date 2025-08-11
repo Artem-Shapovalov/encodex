@@ -8,10 +8,10 @@ example/app.c:
 KEY=0102030405060708091011121314151617181920212223242526272829303132
 
 check_ansi: encodex.c encodex.h
-	cppcheck encodex.h encodex.c -DENCODEX_CHECK --enable=all --suppress=missingIncludeSystem --suppress=staticFunction --std=c90 --quiet
+	cppcheck encodex.h encodex.c -DENCODEX_CHECK --enable=all --inline-suppr --suppress=missingIncludeSystem --suppress=unmatchedSuppression --std=c90 --quiet
 
 check_misra: encodex.c encodex.h
-	cppcheck encodex.h encodex.c -DENCODEX_CHECK --enable=all --suppress=missingIncludeSystem --suppress=staticFunction --std=c90 --addon=misra --quiet
+	cppcheck encodex.h encodex.c -DENCODEX_CHECK --enable=all --inline-suppr --suppress=missingIncludeSystem --suppress=unmatchedSuppression --std=c90 --addon=misra --quiet
 
 check: encodex.c encodex.h
 	$(CC) -c encodex.c -o encodex.o -ansi -Wall -Werror -pedantic -Os
