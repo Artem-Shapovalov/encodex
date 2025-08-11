@@ -272,6 +272,9 @@ static void shuffle(uint8_t* block, const uint8_t* key)
 	}
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void encodex(uint8_t* block, const uint8_t* key)
 {
 	rol_block(block, key);
@@ -376,6 +379,9 @@ static void revert_shuffle(uint8_t* block, const uint8_t* key)
 	}
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void decodex(uint8_t* block, const uint8_t* key)
 {
 	revert_shuffle  (block, key);
@@ -406,25 +412,35 @@ static uint32_t cbc(uint8_t* key, uint32_t seed)
 	return prnd_prev(prnd());
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void encodex_cbc_stream_init(const uint8_t* key, uint32_t* seed)
 {
 	*seed = convolute(key);
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void encodex_cbc_stream(uint8_t* block, uint8_t* key, uint32_t* seed)
 {
 	*seed = cbc(key, *seed);
 	encodex(block, key);
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void decodex_cbc_stream(uint8_t* block, uint8_t* key, uint32_t* seed)
 {
 	*seed = cbc(key, *seed);
 	decodex(block, key);
 }
 
-void usage(void);
-
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void encodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 {
 	register size_t idx;
@@ -445,13 +461,15 @@ void encodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 	}
 }
 
+#ifdef ENCODEX_CHECK
+__attribute__((used))
+#endif /* ENCODEX_CHECK */
 void decodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 {
 	register size_t idx;
 	uint32_t seed;
 	uint8_t _key[ENCODEX_KEY_SIZE_BYTES];
 
-	(void) usage; /* To suppress static analyzer false positive */
 	for (idx = 0; idx < ENCODEX_KEY_SIZE_BYTES; idx++)
 	{
 		_key[idx] = key[idx];
@@ -464,10 +482,4 @@ void decodex_cbc(uint8_t* blocks, size_t blocks_num, const uint8_t* key)
 		decodex_cbc_stream(&blocks[idx * ENCODEX_BLOCK_SIZE_BYTES],
 				_key, &seed);
 	}
-}
-
-void usage(void)
-{
-	(void) encodex_cbc;
-	(void) decodex_cbc;
 }
