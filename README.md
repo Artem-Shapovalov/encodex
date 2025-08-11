@@ -11,6 +11,7 @@
 [![ARM Build](https://github.com/Artem-Shapovalov/encodex/actions/workflows/arm_build.yml/badge.svg)](https://github.com/Artem-Shapovalov/encodex/actions/workflows/arm_build.yml)
 [![AVR build](https://github.com/Artem-Shapovalov/encodex/actions/workflows/avr_build.yml/badge.svg)](https://github.com/Artem-Shapovalov/encodex/actions/workflows/avr_build.yml)
 [![RISC V Build](https://github.com/Artem-Shapovalov/encodex/actions/workflows/risc_v_build.yml/badge.svg)](https://github.com/Artem-Shapovalov/encodex/actions/workflows/risc_v_build.yml)
+[![MIPS Build](https://github.com/Artem-Shapovalov/encodex/actions/workflows/Mips_check.yml/badge.svg)](https://github.com/Artem-Shapovalov/encodex/actions/workflows/Mips_check.yml)
 
 | Compiler          | Text | Data | BSS  |
 |-------------------|------|------|------|
@@ -19,3 +20,4 @@
 | arm-none-eabi-gcc | 1116 |    4 |    0 |
 | avr-gcc           | 1928 |    4 |    0 |
 | riscv64-linux-gnu | 2044 |    4 |    0 |
+| mips-linux-gnu    | 1936 |    4 |    0 |
