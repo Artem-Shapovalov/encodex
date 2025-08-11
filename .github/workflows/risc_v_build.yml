@@ -14,4 +14,4 @@ jobs:
 
       - name: Build
         run: |
-          make check CC=riscv64-elf-gcc
+          make check CC=riscv64-linux-gnu-gcc
