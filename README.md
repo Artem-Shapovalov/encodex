@@ -30,13 +30,15 @@ The algorithm consists of next operations:
 - Noize: XOR with pseudo-random sequence all of the bytes.
 - Shuffle: permutate bytes in the block in chaotic order.
 
-| Stage         | Image 1                               | Image 2                             |
-|---------------|---------------------------------------|-------------------------------------|
-| Initial state | ![image](docs/portrait.png)           | ![image](docs/teapot.png)           |
-| RoL block     | ![image](docs/portrait_rol_block.png) | ![image](docs/teapot_rol_block.png) |
-| Add key       | ![image](docs/portrait_add_key.png)   | ![image](docs/teapot_add_key.png)   |
-| Noize         | ![image](docs/portrait_noize.png)     | ![image](docs/teapot_noize.png)     |
-| Shuffle       | ![image](docs/portrait_shuffle.png)   | ![image](docs/teapot_shuffle.png)   |
+| Stage         | Image 1 ECB                           | Image 1 CBC                               | Image 2 ECB                         | Image 2 CBC                             |
+|---------------|---------------------------------------|-------------------------------------------|-------------------------------------|-----------------------------------------|
+| Initial state | ![image](docs/portrait.png)           | ![image](docs/portrait.png)               | ![image](docs/teapot.png)           | ![image](docs/teapot.png)               |
+| RoL block     | ![image](docs/portrait_rol_block.png) | ![image](docs/portrait_rol_block_cbc.png) | ![image](docs/teapot_rol_block.png) | ![image](docs/teapot_rol_block_cbc.png) |
+| Add key       | ![image](docs/portrait_add_key.png)   | ![image](docs/portrait_add_key_cbc.png)   | ![image](docs/teapot_add_key.png)   | ![image](docs/teapot_add_key_cbc.png)   |
+| Noize         | ![image](docs/portrait_noize.png)     | ![image](docs/portrait_noize_cbc.png)     | ![image](docs/teapot_noize.png)     | ![image](docs/teapot_noize_cbc.png)     |
+| Shuffle       | ![image](docs/portrait_shuffle.png)   | ![image](docs/portrait_shuffle_cbc.png)   | ![image](docs/teapot_shuffle.png)   | ![image](docs/teapot_shuffle_cbc.png)   |
+
+
 
 CBC mode is simple, it's such a pseudo-random key regeneration, this why you easily may encode and decode series of blocks in forward direction.
 
