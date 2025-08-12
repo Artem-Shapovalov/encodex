@@ -54,8 +54,10 @@ CBC mode is good for all three ciphers and looks like a white noize.
 
 | Mode | DES                                 | Encodex                                 | AES                                 |
 |------|-------------------------------------|-----------------------------------------|-------------------------------------|
+| None | ![image](docs/portrait.png)         | ![image](docs/portrait.png)             | ![image](docs/portrait.png)         |
 | ECB  | ![image](docs/portrait_des.png)     | ![image](docs/portrait_encoded.png)     | ![image](docs/portrait_aes.png)     |
 | CBC  | ![image](docs/portrait_des_cbc.png) | ![image](docs/portrait_encoded_cbc.png) | ![image](docs/portrait_aes_cbc.png) |
+| None | ![image](docs/teapot.png)           | ![image](docs/teapot.png)               | ![image](docs/teapot.png)           |
 | ECB  | ![image](docs/teapot_des.png)       | ![image](docs/teapot_encoded.png)       | ![image](docs/teapot_aes.png)       |
 | CBC  | ![image](docs/teapot_des_cbc.png)   | ![image](docs/teapot_encoded_cbc.png)   | ![image](docs/teapot_aes_cbc.png)   |
 
