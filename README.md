@@ -25,6 +25,8 @@ ENCODEX is a lightweight and fast block cipher symmetrical key algorithm. The go
 
 The algorithm consists of next operations:
 
+![image](docs/process.png)
+
 - RoL block: cyclic rotate bytes according the key.
 - Add key: adding with overflow bytes of the key to the block.
 - Noize: XOR with pseudo-random sequence all of the bytes.
@@ -38,9 +40,38 @@ The algorithm consists of next operations:
 | Noize         | ![image](docs/portrait_noize.png)     | ![image](docs/portrait_noize_cbc.png)     | ![image](docs/teapot_noize.png)     | ![image](docs/teapot_noize_cbc.png)     |
 | Shuffle       | ![image](docs/portrait_shuffle.png)   | ![image](docs/portrait_shuffle_cbc.png)   | ![image](docs/teapot_shuffle.png)   | ![image](docs/teapot_shuffle_cbc.png)   |
 
-
-
 CBC mode is simple, it's such a pseudo-random key regeneration, this why you easily may encode and decode series of blocks in forward direction.
+
+Each step of the algorithm is iterating throught the bytes of the input block and
+performs some revertable operations.
+
+## RoL block
+
+![image](docs/rol_block.png)
+
+Each byte of the block is cyclically shifted for the corresponding byte of the key.
+
+## Add key
+
+![image](docs/add_key.png)
+
+To each byte of the block adds corresponding byte of the key with overflowing.
+
+## Noize
+
+![image](docs/noize.png)
+
+Here, each byte of the block XOR-ed with the random number. Random number generator initialized with the convolution of the key.
+
+![image](docs/convolute.png)
+
+The key XOR-ed with itself in the loop. For example, first byte of the output seed convolutes with the 1, 4, 8, 12, 16, 20, 24, 28, and 32 bytes of the key.
+
+## Shuffle
+
+![image](docs/shuffle.png)
+
+This step permutates bytes of the block. In the loop each byte swaps with the other byte of the block. Index of the other byte to swap is corresponding key byte % 32.
 
 # Comparsion
 
