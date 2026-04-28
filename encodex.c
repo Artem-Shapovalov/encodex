@@ -264,15 +264,17 @@ static uint8_t get_block_bit(const uint8_t* block, size_t idx)
  *  \param shift Number of bits to rotate. */
 static void rol_full_block(uint8_t* block, size_t shift)
 {
-	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES];
-	register size_t idx;
 	size_t bits_num;
+	size_t shift_mod;
 
 	bits_num = ENCODEX_BLOCK_SIZE_BYTES * 8u;
-	shift %= bits_num;
+	shift_mod = shift % bits_num;
 
-	if (shift != 0u)
+	if (shift_mod != 0u)
 	{
+		uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES];
+		register size_t idx;
+
 		for (idx = 0u; idx < ENCODEX_BLOCK_SIZE_BYTES; idx++)
 		{
 			tmp[idx] = block[idx];
@@ -282,7 +284,7 @@ static void rol_full_block(uint8_t* block, size_t shift)
 		for (idx = 0u; idx < bits_num; idx++)
 		{
 			set_block_bit(block,
-				(idx + shift) % bits_num,
+				(idx + shift_mod) % bits_num,
 				get_block_bit(tmp, idx));
 		}
 	}
@@ -334,13 +336,14 @@ static void feistel_f(
 	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES / 2u];
 	register size_t idx;
 	uint32_t seed;
-	uint8_t shift;
 
 	seed = convolute(key) ^ (uint32_t)(0x9e3779b9u + offset);
 	prnd_init(seed);
 
 	for (idx = 0u; idx < (ENCODEX_BLOCK_SIZE_BYTES / 2u); idx++)
 	{
+		uint8_t shift;
+
 		tmp[idx] = (uint8_t)(half[idx]
 			+ key[(idx + offset) % ENCODEX_KEY_SIZE_BYTES]);
 		shift = key[(idx + offset + 7u) % ENCODEX_KEY_SIZE_BYTES] % 8u;
