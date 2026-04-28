@@ -1,0 +1,19 @@
+# Build outputs
+*.o
+/test/test
+/example/encodex
+/break/chosen_plaintext
+/break/known_plaintext
+/break/mitm_validator
+/docs/visualizer
+
+# Generated example outputs
+/example/*_encoded.data
+/example/*_encoded_cbc.data
+/example/*_decoded.data
+/example/*_decoded_cbc.data
+
+# Local assistant/tool state
+/.aider.chat.history.md
+/.aider.input.history
+/.aider.tags.cache.v4/

@@ -227,6 +227,78 @@ static uint32_t convolute(const uint8_t* key)
 	return seed;
 }
 
+/** \brief Sets a bit value inside a memory block.
+ *  \param block Valid pointer to the memory block.
+ *  \param idx Number of the bit to set.
+ *  \param val New bit value. */
+static void set_block_bit(uint8_t* block, size_t idx, uint8_t val)
+{
+	uint8_t mask;
+
+	mask = (uint8_t)((uint8_t)1u << (idx & 7u));
+
+	if (val != 0u)
+	{
+		block[idx / 8u] |= mask;
+	}
+	else
+	{
+		block[idx / 8u] &= (uint8_t)(~mask);
+	}
+}
+
+/** \brief Returns a bit value from a memory block.
+ *  \param block Valid pointer to the memory block.
+ *  \param idx Number of the bit to get.
+ *  \return The requested bit value. */
+static uint8_t get_block_bit(const uint8_t* block, size_t idx)
+{
+	uint8_t mask;
+
+	mask = (uint8_t)((uint8_t)1u << (idx & 7u));
+	return ((block[idx / 8u] & mask) != 0u) ? 1u : 0u;
+}
+
+/** \brief Cyclic rotation to left for all bits in a block.
+ *  \param block Valid pointer to the memory block.
+ *  \param shift Number of bits to rotate. */
+static void rol_full_block(uint8_t* block, size_t shift)
+{
+	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES];
+	register size_t idx;
+	size_t bits_num;
+
+	bits_num = ENCODEX_BLOCK_SIZE_BYTES * 8u;
+	shift %= bits_num;
+
+	if (shift != 0u)
+	{
+		for (idx = 0u; idx < ENCODEX_BLOCK_SIZE_BYTES; idx++)
+		{
+			tmp[idx] = block[idx];
+			block[idx] = 0u;
+		}
+
+		for (idx = 0u; idx < bits_num; idx++)
+		{
+			set_block_bit(block,
+				(idx + shift) % bits_num,
+				get_block_bit(tmp, idx));
+		}
+	}
+}
+
+/** \brief Cyclic rotation to right for all bits in a block.
+ *  \param block Valid pointer to the memory block.
+ *  \param shift Number of bits to rotate. */
+static void ror_full_block(uint8_t* block, size_t shift)
+{
+	size_t bits_num;
+
+	bits_num = ENCODEX_BLOCK_SIZE_BYTES * 8u;
+	rol_full_block(block, bits_num - (shift % bits_num));
+}
+
 /** \brief Performs the XOR operation with each byte of memory block and
  *         pseudo-random values.
  *  \param block Valid pointer to the block of memory. This memory would be
@@ -245,6 +317,95 @@ static void noize(uint8_t* block, const uint8_t* key)
 	for (idx = 0; idx < ENCODEX_BLOCK_SIZE_BYTES; idx++)
 	{
 		block[idx] ^= prnd() % 256u;
+	}
+}
+
+/** \brief One-way function for the Feistel-like mixing layer.
+ *  \param res Valid pointer to the result memory. Should be 16 bytes long.
+ *  \param half Valid pointer to the input half-block. Should be 16 bytes long.
+ *  \param key Valid pointer to the key.
+ *  \param offset Key offset for this half of the Feistel layer. */
+static void feistel_f(
+		uint8_t* res,
+		const uint8_t* half,
+		const uint8_t* key,
+		size_t offset)
+{
+	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES / 2u];
+	register size_t idx;
+	uint32_t seed;
+	uint8_t shift;
+
+	seed = convolute(key) ^ (uint32_t)(0x9e3779b9u + offset);
+	prnd_init(seed);
+
+	for (idx = 0u; idx < (ENCODEX_BLOCK_SIZE_BYTES / 2u); idx++)
+	{
+		tmp[idx] = (uint8_t)(half[idx]
+			+ key[(idx + offset) % ENCODEX_KEY_SIZE_BYTES]);
+		shift = key[(idx + offset + 7u) % ENCODEX_KEY_SIZE_BYTES] % 8u;
+		tmp[idx] = (uint8_t)(
+			(0xffu & (tmp[idx] << shift)) |
+			(0xffu & (tmp[idx] >> (8u - shift))));
+		tmp[idx] ^= prnd() % 256u;
+	}
+
+	for (idx = 0u; idx < (ENCODEX_BLOCK_SIZE_BYTES / 2u); idx++)
+	{
+		res[idx] = (uint8_t)(tmp[idx]
+			^ tmp[(idx + 1u) % (ENCODEX_BLOCK_SIZE_BYTES / 2u)]
+			^ (uint8_t)(tmp[(idx + 7u) %
+				(ENCODEX_BLOCK_SIZE_BYTES / 2u)]
+				+ key[(idx + offset + 13u) %
+					ENCODEX_KEY_SIZE_BYTES]));
+	}
+}
+
+/** \brief Cross-mixes block halves by a Feistel-like reversible layer.
+ *  \param block Valid pointer to the memory block.
+ *  \param key Valid pointer to the key. */
+static void feistel_layer(uint8_t* block, const uint8_t* key)
+{
+	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES / 2u];
+	register size_t idx;
+	size_t half_size;
+
+	half_size = ENCODEX_BLOCK_SIZE_BYTES / 2u;
+
+	feistel_f(tmp, &block[half_size], key, 0u);
+	for (idx = 0u; idx < half_size; idx++)
+	{
+		block[idx] ^= tmp[idx];
+	}
+
+	feistel_f(tmp, block, key, half_size);
+	for (idx = 0u; idx < half_size; idx++)
+	{
+		block[half_size + idx] ^= tmp[idx];
+	}
+}
+
+/** \brief Reverts the Feistel-like mixing layer.
+ *  \param block Valid pointer to the memory block.
+ *  \param key Valid pointer to the key. */
+static void revert_feistel_layer(uint8_t* block, const uint8_t* key)
+{
+	uint8_t tmp[ENCODEX_BLOCK_SIZE_BYTES / 2u];
+	register size_t idx;
+	size_t half_size;
+
+	half_size = ENCODEX_BLOCK_SIZE_BYTES / 2u;
+
+	feistel_f(tmp, block, key, half_size);
+	for (idx = 0u; idx < half_size; idx++)
+	{
+		block[half_size + idx] ^= tmp[idx];
+	}
+
+	feistel_f(tmp, &block[half_size], key, 0u);
+	for (idx = 0u; idx < half_size; idx++)
+	{
+		block[idx] ^= tmp[idx];
 	}
 }
 
@@ -278,7 +439,9 @@ void encodex(uint8_t* block, const uint8_t* key)
 {
 	rol_block(block, key);
 	add_key  (block, key);
+	rol_full_block(block, convolute(key) % (ENCODEX_BLOCK_SIZE_BYTES * 8u));
 	noize    (block, key);
+	feistel_layer(block, key);
 	shuffle  (block, key);
 }
 
@@ -383,7 +546,9 @@ static void revert_shuffle(uint8_t* block, const uint8_t* key)
 void decodex(uint8_t* block, const uint8_t* key)
 {
 	revert_shuffle  (block, key);
+	revert_feistel_layer(block, key);
 	revert_noize    (block, key);
+	ror_full_block(block, convolute(key) % (ENCODEX_BLOCK_SIZE_BYTES * 8u));
 	revert_add_key  (block, key);
 	revert_rol_block(block, key);
 }
